@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+</head>
+<body>
+    <main>
+        <h1>Insaneous Chat</h1>
+        <form name="room">
+            <label for="channel">Channel name:</label>
+            <input type="text" name="channel" required>
+            <label for="nickname">Nickname:</label>
+            <input type="text" name="nickname" required>
+            <button>Connect</button>
+        </form>
+        <span id="status">Not connected</span>
+        <form name="message">
+            <label for="content">Message:</label>
+            <input type="text" name="content" required>
+            <button>Send</button>
+        </form>
+        <div class="messages">
+            <!-- Messages will be added here -->
+        </div>
+    </main>
+    <script>
+    const roomForm = document.forms.room;
+    const messageForm = document.forms.message;
+    const messages = document.querySelector(".messages");
+    var ws = null;
+    function processMessage(event) {
+        messages.innerHTML += `
+        <div class="message">
+            <p>${event.data}</p>
+        </div>
+        `;
+        messages.scrollTop = messages.scrollHeight;
+    }
+    roomForm.onsubmit = (e) => {
+        e.preventDefault()
+        if (ws) {
+            ws.onmessage = processMessage
+        }
+        else{
+            ws = new WebSocket(`ws://localhost:8000/ws/${roomForm.channel.value}/${roomForm.nickname.value}`);
+            ws.onopen = () => {
+                document.querySelector("#status").innerText = "Connected to " + roomForm.channel.value;
+            };
+            ws.onmessage = processMessage
+        }
+    };
+    messageForm.onsubmit = (e) => {
+        e.preventDefault();
+        ws.send(`${roomForm.nickname.value}: ${messageForm.content.value}`);
+        messageForm.reset();
+    };
+
+    window.addEventListener("beforeunload", () => {
+        if (ws) {
+            ws.close();
+        }
+    });
+    </script>
+</body>
+</html>
