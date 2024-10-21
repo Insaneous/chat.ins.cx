@@ -4,10 +4,96 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat</title>
+    <style>
+        *{
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            background-color: rgb(31, 31, 31);
+            color: white;
+        }
+        header{
+            background-color: rgb(66, 0, 171);
+            color: white;
+            padding: 1rem;
+        }
+        main{
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-width: 600px;
+            margin: auto;
+            padding: 1rem;
+        }
+        form{
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        form[name='disconnect'] {
+            display: none;
+        }
+        form[name="message"] {
+            display: none;
+        }
+        button{
+            background-color: rgb(66, 0, 171);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+        input{
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            background-color: rgb(76, 76, 76);
+            color: white;
+        }
+        ul{
+            list-style: none;
+        }
+        li{
+            padding: 0.5rem;
+            font-size: large;
+            border-top: 1px solid rgb(76, 76, 76);
+        }
+        .messages{
+            overflow-y: scroll;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .message{
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.5rem;
+            background-color: rgb(76, 76, 76);
+            border-radius: 0.5rem;
+        }
+        .message-header{
+            display: flex;
+            justify-content: space-between;
+        }
+        .alert{
+            background-color: rgb(98, 98, 98);
+            border-radius: 0.5rem;
+            padding: 0.2rem;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-    <main>
+    <header>
         <h1>Insaneous Chat</h1>
+    </header>
+    <main>
         <form name="room">
             <label for="channel">Channel name:</label>
             <input type="text" name="channel" required>
@@ -15,27 +101,36 @@
             <input type="text" name="nickname" required>
             <button>Connect</button>
         </form>
-        <span id="status">Not connected</span>
+        <h2 id="status">Open channels:</h2>
+        <ul class="channels">
+        </ul>
+        <form action="" name="disconnect">
+            <button>Disconnect</button>
+        </form>
         <form name="message">
             <label for="content">Message:</label>
             <input type="text" name="content" required>
             <button>Send</button>
         </form>
-        <div class="messages">
-            <!-- Messages will be added here -->
+        <div class="messages" hidden>
         </div>
     </main>
     <script>
     const roomForm = document.forms.room;
     const messageForm = document.forms.message;
+    const disconnectForm = document.forms.disconnect;
     const messages = document.querySelector(".messages");
+    const channels = document.querySelector(".channels");
     var ws = null;
+    fetch('http://localhost:8000/')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            channels.innerHTML = data.channels.map(channel => `<li>${channel}</li>`).join("");
+        });
     function processMessage(event) {
-        messages.innerHTML += `
-        <div class="message">
-            <p>${event.data}</p>
-        </div>
-        `;
+        console.log(event.data);
+        messages.innerHTML += event.data;
         messages.scrollTop = messages.scrollHeight;
     }
     roomForm.onsubmit = (e) => {
@@ -47,16 +142,28 @@
             ws = new WebSocket(`ws://localhost:8000/ws/${roomForm.channel.value}/${roomForm.nickname.value}`);
             ws.onopen = () => {
                 document.querySelector("#status").innerText = "Connected to " + roomForm.channel.value;
+                channels.setAttribute("hidden", true);
+                messages.removeAttribute("hidden");
+                roomForm.style.display = "none";
+                messageForm.style.display = "flex";
+                disconnectForm.style.display = "flex";
             };
             ws.onmessage = processMessage
         }
     };
     messageForm.onsubmit = (e) => {
         e.preventDefault();
-        ws.send(`${roomForm.nickname.value}: ${messageForm.content.value}`);
+        ws.send(`
+        <div class="message">
+            <div class="message-header">
+                <h3>${roomForm.nickname.value}</h3>
+                <p>${new Date().toLocaleTimeString()}</p>
+            </div>
+            <p>${messageForm.content.value}</p>
+        </div>
+        `);
         messageForm.reset();
     };
-
     window.addEventListener("beforeunload", () => {
         if (ws) {
             ws.close();

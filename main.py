@@ -6,6 +6,9 @@ class Channel:
   def __init__(self, name):
     self.name = name
     self.connections = []
+    
+  def __str__(self):
+    return self.name
 
   async def broadcast(self, message, sender):
     for connection in self.connections:
@@ -13,16 +16,24 @@ class Channel:
 
 channels = {}
 
+@app.get('/')
+async def get_channels():
+    return {'channels': list(channels.keys())}
+
 @app.websocket('/ws/{channel}/{nickname}')
 async def websocket_endpoint(websocket:WebSocket, channel: str, nickname: str):
     try:
         await websocket.accept()
         if channel not in channels:
             channels[channel] = Channel(channel)
-
+            
         channel_obj = channels[channel]
         channel_obj.connections.append(websocket)
-        await channel_obj.broadcast(f'{nickname} joined the channel', websocket)
+        await channel_obj.broadcast(f"""
+                                    <div class="alert">
+                                        <p>{nickname} joined the channel</p>
+                                    </div>
+                                    """, websocket)
 
         while True:
             data = await websocket.receive_text()
@@ -30,6 +41,10 @@ async def websocket_endpoint(websocket:WebSocket, channel: str, nickname: str):
     except WebSocketDisconnect:
         channel_obj = channels[channel]
         channel_obj.connections.remove(websocket)
-        await channel_obj.broadcast(f'{nickname} left the channel', websocket)
+        await channel_obj.broadcast(f"""
+                                    <div class="alert">
+                                        <p>{nickname} left the channel</p>
+                                    </div>
+                                    """, websocket)
         if len(channel_obj.connections) == 0:
             del channels[channel]
