@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import './App.css';
+import { renderUnicode } from 'uqr';
 
 function App() {
   const [ws, setWs] = useState(null);
@@ -10,7 +11,10 @@ function App() {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
-
+  const qr = renderUnicode("exp://94.158.50.15:8081", {
+    blackChar: '██',
+    whiteChar: '  ',
+  });
   const address = "chat-be.ins.cx";
   const messagesRef = useRef();
 
@@ -96,23 +100,31 @@ function App() {
       </header>
       <main>
         {!connected && (
-          <div className="welcome">
-            <form onSubmit={handleConnect}>
-              <label>Channel name:</label>
-              <input value={channel} onChange={e => setChannel(e.target.value)} required />
-              <label>Nickname:</label>
-              <input value={nickname} onChange={e => setNickname(e.target.value)} required />
-              <button>Connect</button>
-            </form>
-            {channelList.length > 0 && (
-              <>
-                <h2 id="status">Open channels:</h2>
-                <ul className="channels">
-                  {channelList.map((chan, i) => <li key={i} onClick={() => setChannel(chan)}>{chan}</li>)}
-                </ul>
-              </>
-            )}
-          </div>
+          <>
+            <div className="welcome">
+              <form onSubmit={handleConnect}>
+                <label>Channel name:</label>
+                <input value={channel} onChange={e => setChannel(e.target.value)} required />
+                <label>Nickname:</label>
+                <input value={nickname} onChange={e => setNickname(e.target.value)} required />
+                <button>Connect</button>
+              </form>
+              {channelList.length > 0 && (
+                <>
+                  <h2 id="status">Open channels:</h2>
+                  <ul className="channels">
+                    {channelList.map((chan, i) => <li key={i} onClick={() => setChannel(chan)}>{chan}</li>)}
+                  </ul>
+                </>
+              )}
+            </div>
+            <div className='qr'>
+              <h2>Scan to open in Expo</h2>
+              <p>
+                {qr}
+              </p>
+            </div>
+          </>
         )}
 
         {connected && (
