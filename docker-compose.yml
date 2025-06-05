@@ -10,6 +10,7 @@ services:
     working_dir: /app
     volumes:
       - ./native:/app
+      - react_native_node_modules:/app/node_modules
     healthcheck:
       disable: true
     depends_on:
