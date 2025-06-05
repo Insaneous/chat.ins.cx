@@ -70,17 +70,17 @@ export default function App() {
 
   const handleSend = () => {
     if (!ws || message.trim() === '') return;
-  
+
     const msgObj = {
       nickname,
       timestamp: new Date().toLocaleTimeString(),
       message,
     };
-  
+
     ws.send(JSON.stringify(msgObj));
-  
+
     setMessages(prev => [...prev, msgObj]);
-  
+
     setMessage('');
   };
 
@@ -152,8 +152,8 @@ export default function App() {
                 </View>
               </View>
 
-              <ScrollView style={styles.messages}>
-                {messages.map((msg, i) => (
+              <ScrollView style={styles.messages} inverted>
+                {[...messages].reverse().map((msg, i) => (
                   <View key={i} style={styles.message}>
                     <Text style={styles.messageHeader}>
                       {msg.nickname} <Text style={styles.timestamp}>{msg.timestamp}</Text>
