@@ -1,7 +1,7 @@
 services:
   react_native_app:
     build:
-      context: .
+      context: ./native
       args:
         - NODE_ENV=development
     environment:
