@@ -18,4 +18,4 @@ RUN npm ci
 COPY . .
 
 ENTRYPOINT ["npm", "run"]
-CMD ["start"]
+CMD ["start", "--host", "0.0.0.0"]
