@@ -17,4 +17,4 @@ RUN npm ci
 # for development, we bind mount volumes; comment out for production
 COPY . .
 
-CMD ["npx", "expo", "start", "--host", "0.0.0.0"]
+CMD ["npx", "expo", "start", "--host", "lan"]
