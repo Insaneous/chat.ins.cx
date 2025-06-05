@@ -78,7 +78,7 @@ function App() {
 
   const handleSend = (e) => {
     e.preventDefault();
-    if (!ws) return;
+    if (!ws || message.trim() === '') return;
 
     const payload = {
       nickname,
@@ -87,6 +87,7 @@ function App() {
     };
 
     ws.send(JSON.stringify(payload));
+    setMessages(prev => [...prev, payload]);
     setMessage('');
   };
 
@@ -123,9 +124,7 @@ function App() {
             </div>
             <div className='qr'>
               <h2>Scan to open in Expo</h2>
-              <p>
-                {qr}
-              </p>
+              <p>{qr}</p>
             </div>
           </>
         )}
@@ -143,7 +142,7 @@ function App() {
               </form>
               <div className="messages" ref={messagesRef}>
                 {messages.map((msg, i) => (
-                  <div key={i} className="message">
+                  <div key={i} className={`message ${msg.nickname === nickname ? 'own' : ''}`}>
                     <div className="message-header">
                       <h3>{msg.nickname}</h3>
                       <p>{msg.timestamp}</p>

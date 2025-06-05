@@ -55,7 +55,6 @@ async def websocket_endpoint(websocket: WebSocket, channel: str, nickname: str):
     channel_obj = channels[channel]
     channel_obj.users[nickname] = User(nickname, websocket)
 
-    # Notify others that user joined
     await channel_obj.broadcast({
         "nickname": "System",
         "timestamp": datetime.now().strftime("%H:%M:%S"),
@@ -67,7 +66,6 @@ async def websocket_endpoint(websocket: WebSocket, channel: str, nickname: str):
             data = await websocket.receive_text()
             try:
                 msg = json.loads(data)
-                # Optional: validate structure here
                 await channel_obj.broadcast(msg, websocket)
             except json.JSONDecodeError:
                 print("Invalid JSON received, ignoring.")
