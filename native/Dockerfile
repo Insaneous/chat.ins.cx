@@ -4,6 +4,9 @@ FROM node:20-alpine
 # Set the working directory inside the container
 WORKDIR /app
 
+# Create a new Expo app
+RUN npx create-expo-app@latest . --yes
+
 # Copy package.json and package-lock.json (if available)
 COPY . .
 
