@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir -r req.txt
 COPY . .
 
 # Expose port
-EXPOSE 8090
+EXPOSE 8000
 
 # Run app with SSL
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8090", "--ssl-keyfile=key.key", "--ssl-certfile=cert.crt"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

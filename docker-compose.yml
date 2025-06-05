@@ -1,0 +1,22 @@
+services:
+  frontend:
+    build:
+      context: ./native
+    ports:
+      - "8081:8081"
+    working_dir: /app
+    volumes:
+      - ./native:/app
+    command: npm run start
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./back
+    ports:
+      - "8000:8000"
+    working_dir: /app
+    volumes:
+      - ./back:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
