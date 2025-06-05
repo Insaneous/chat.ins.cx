@@ -19,6 +19,8 @@ services:
       - notused:/opt/react_native_app/app/node_modules
     healthcheck:
       disable: true
+    depends_on:
+      - backend
 
   backend:
     build:
