@@ -1,15 +1,24 @@
 services:
-  frontend:
+  react_native_app:
     build:
-      context: ./native
+      context: .
+      args:
+        - NODE_ENV=development
+    environment:
+      - NODE_ENV=development
+    tty: true
     ports:
-      - "8081:8081"
-    working_dir: /app
+      - '19006:19006'
+      - '19001:19001'
+      - '19002:19002'
+      - '8081:8081'
     volumes:
-      - ./native:/app
-    command: npm run start
-    depends_on:
-      - backend
+      - ./react_native_app:/opt/react_native_app/app:delegated
+      - ./react_native_app/package.json:/opt/react_native_app/package.json
+      - ./react_native_app/package-lock.json:/opt/react_native_app/package-lock.json
+      - notused:/opt/react_native_app/app/node_modules
+    healthcheck:
+      disable: true
 
   backend:
     build:
@@ -20,3 +29,6 @@ services:
     volumes:
       - ./back:/app
     command: uvicorn main:app --host 0.0.0.0 --port 8000
+
+volumes:
+  notused:
