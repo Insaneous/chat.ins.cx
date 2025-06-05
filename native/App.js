@@ -70,14 +70,17 @@ export default function App() {
 
   const handleSend = () => {
     if (!ws || message.trim() === '') return;
-
-    const data = {
+  
+    const msgObj = {
       nickname,
       timestamp: new Date().toLocaleTimeString(),
       message,
     };
-
-    ws.send(JSON.stringify(data));
+  
+    ws.send(JSON.stringify(msgObj));
+  
+    setMessages(prev => [...prev, msgObj]);
+  
     setMessage('');
   };
 
