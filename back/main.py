@@ -1,5 +1,7 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+import json
+from datetime import datetime
 
 app = FastAPI()
 
@@ -16,32 +18,27 @@ app.add_middleware(
 )
 
 class Channel:
-  def __init__(self, name):
-    self.name = name
-    self.users = {}
-    
-  def __str__(self):
-    return self.name
+    def __init__(self, name):
+        self.name = name
+        self.users = {}
 
-  async def broadcast(self, message, sender):
-    for user in self.users.values():
-        if user.connection:
-            await user.connection.send_text(message)
-      
+    async def broadcast(self, message_dict: dict, sender: WebSocket):
+        message_json = json.dumps(message_dict)
+        for user in self.users.values():
+            if user.connection and user.connection != sender:
+                await user.connection.send_text(message_json)
+
 class User:
-    def __init__(self, nickname, connection):
+    def __init__(self, nickname: str, connection: WebSocket):
         self.nickname = nickname
         self.connection = connection
-
-    def __str__(self):
-        return self.nickname
 
 channels = {}
 
 @app.get('/channels')
 async def get_channels():
     return {'channels': list(channels.keys())}
-  
+
 @app.get('/{channel}/users')
 async def get_channel_users(channel: str):
     if channel in channels:
@@ -49,30 +46,39 @@ async def get_channel_users(channel: str):
     return {'users': []}
 
 @app.websocket('/ws/{channel}/{nickname}')
-async def websocket_endpoint(websocket:WebSocket, channel: str, nickname: str):
-    try:
-        await websocket.accept()
-        if channel not in channels:
-            channels[channel] = Channel(channel)
-            
-        channel_obj = channels[channel]
-        channel_obj.users[nickname] = User(nickname, websocket)
-        await channel_obj.broadcast(f"""
-                                    <div class="alert">
-                                        <p>{nickname} joined the channel</p>
-                                    </div>
-                                    """, websocket)
+async def websocket_endpoint(websocket: WebSocket, channel: str, nickname: str):
+    await websocket.accept()
 
+    if channel not in channels:
+        channels[channel] = Channel(channel)
+
+    channel_obj = channels[channel]
+    channel_obj.users[nickname] = User(nickname, websocket)
+
+    # Notify others that user joined
+    await channel_obj.broadcast({
+        "nickname": "System",
+        "timestamp": datetime.now().strftime("%H:%M:%S"),
+        "message": f"{nickname} joined the channel"
+    }, websocket)
+
+    try:
         while True:
             data = await websocket.receive_text()
-            await channel_obj.broadcast(data, websocket)
+            try:
+                msg = json.loads(data)
+                # Optional: validate structure here
+                await channel_obj.broadcast(msg, websocket)
+            except json.JSONDecodeError:
+                print("Invalid JSON received, ignoring.")
     except WebSocketDisconnect:
-        channel_obj = channels[channel]
         channel_obj.users.pop(nickname, None)
-        await channel_obj.broadcast(f"""
-                                    <div class="alert">
-                                        <p>{nickname} left the channel</p>
-                                    </div>
-                                    """, websocket)
-        if len(channel_obj.users) == 0:
+
+        await channel_obj.broadcast({
+            "nickname": "System",
+            "timestamp": datetime.now().strftime("%H:%M:%S"),
+            "message": f"{nickname} left the channel"
+        }, websocket)
+
+        if not channel_obj.users:
             del channels[channel]

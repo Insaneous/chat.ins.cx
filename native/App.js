@@ -50,10 +50,13 @@ export default function App() {
       fetchUsers();
     };
     socket.onmessage = (event) => {
-      if (event.data.trim() !== '') {
-        setMessages(prev => [...prev, event.data]);
+      try {
+        const data = JSON.parse(event.data);
+        setMessages(prev => [...prev, data]);
+        fetchUsers();
+      } catch (err) {
+        console.warn('Invalid JSON received:', event.data);
       }
-      fetchUsers();
     };
     socket.onclose = () => {
       setConnected(false);
@@ -67,11 +70,14 @@ export default function App() {
 
   const handleSend = () => {
     if (!ws || message.trim() === '') return;
-    ws.send(
-      `<div class="message"><div class="message-header"><h3>${nickname}</h3>
-      <p>${new Date().toLocaleTimeString()}</p></div>
-      <p>${message}</p></div>`.trim()
-    );
+
+    const data = {
+      nickname,
+      timestamp: new Date().toLocaleTimeString(),
+      message,
+    };
+
+    ws.send(JSON.stringify(data));
     setMessage('');
   };
 
@@ -82,12 +88,10 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.safeContainer}>
-        <StatusBar style='light'/>
+        <StatusBar style='light' />
         <View style={styles.header}>
           <Text style={styles.headerText}>Insaneous Chat</Text>
-          {connected && 
-          <Text style={styles.headerText}>{`| Channel: ${channel}`}</Text>
-          }
+          {connected && <Text style={styles.headerText}>{`| Channel: ${channel}`}</Text>}
         </View>
         <View style={styles.container}>
           {!connected ? (
@@ -147,12 +151,12 @@ export default function App() {
 
               <ScrollView style={styles.messages}>
                 {messages.map((msg, i) => (
-                  <Text
-                    key={i}
-                    style={styles.message}
-                  >
-                    {msg.replace(/<[^>]*>?/gm, '').trim()}
-                  </Text>
+                  <View key={i} style={styles.message}>
+                    <Text style={styles.messageHeader}>
+                      {msg.nickname} <Text style={styles.timestamp}>{msg.timestamp}</Text>
+                    </Text>
+                    <Text style={styles.messageText}>{msg.message}</Text>
+                  </View>
                 ))}
               </ScrollView>
 
@@ -188,65 +192,76 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 24,
     fontWeight: 'bold',
-    backgroundColor: 'rgb(66, 0, 171)',
     textAlign: 'center',
   },
   welcome: {
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   input: {
     backgroundColor: 'rgb(76, 76, 76)',
     color: '#fff',
     padding: 12,
     marginVertical: 6,
-    borderRadius: 8
+    borderRadius: 8,
   },
   button: {
     backgroundColor: 'rgb(66, 0, 171)',
     padding: 12,
     borderRadius: 8,
-    marginVertical: 6
+    marginVertical: 6,
   },
   buttonText: {
     color: '#fff',
     textAlign: 'center',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   subheading: {
     color: '#fff',
     marginTop: 12,
-    fontSize: 18
+    fontSize: 18,
   },
   listItem: {
     color: '#fff',
     paddingVertical: 8,
     borderBottomColor: 'rgb(76, 76, 76)',
     borderBottomWidth: 1,
-    fontSize: 16
+    fontSize: 16,
   },
   chat: {
-    flex: 1
+    flex: 1,
   },
   messageInputSection: {
-    marginBottom: 12
+    marginBottom: 12,
   },
   actions: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   messages: {
     flex: 1,
-    marginVertical: 8
+    marginVertical: 8,
   },
   message: {
     backgroundColor: 'rgb(76, 76, 76)',
-    color: '#fff',
     padding: 10,
     borderRadius: 8,
-    marginBottom: 6
+    marginBottom: 6,
+  },
+  messageHeader: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  messageText: {
+    color: '#fff',
+  },
+  timestamp: {
+    fontWeight: 'normal',
+    color: '#ccc',
+    fontSize: 12,
+    marginLeft: 6,
   },
   users: {
-    paddingTop: 12
-  }
+    paddingTop: 12,
+  },
 });

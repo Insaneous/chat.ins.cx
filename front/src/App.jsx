@@ -32,13 +32,13 @@ function App() {
       .then(data => {
         setChannelList(data.channels || []);
       });
-  });
+  }, []);
 
   useEffect(() => {
     fetchChannels();
     const interval = setInterval(fetchChannels, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchChannels]);
 
   useEffect(() => {
     if (messagesRef.current) {
@@ -53,12 +53,17 @@ function App() {
     socket.onopen = () => {
       setWs(socket);
       setConnected(true);
-      setUsers(fetchUsers());
+      fetchUsers();
     };
 
     socket.onmessage = (event) => {
-      setMessages(prev => [...prev, event.data]);
-      setUsers(fetchUsers());
+      try {
+        const msgObj = JSON.parse(event.data);
+        setMessages(prev => [...prev, msgObj]);
+      } catch (err) {
+        console.error("Invalid message format:", event.data);
+      }
+      fetchUsers();
     };
 
     socket.onclose = () => {
@@ -75,15 +80,13 @@ function App() {
     e.preventDefault();
     if (!ws) return;
 
-    ws.send(`
-      <div class="message">
-        <div class="message-header">
-          <h3>${nickname}</h3>
-          <p>${new Date().toLocaleTimeString()}</p>
-        </div>
-        <p>${message}</p>
-      </div>
-    `);
+    const payload = {
+      nickname,
+      timestamp: new Date().toLocaleTimeString(),
+      message
+    };
+
+    ws.send(JSON.stringify(payload));
     setMessage('');
   };
 
@@ -140,7 +143,13 @@ function App() {
               </form>
               <div className="messages" ref={messagesRef}>
                 {messages.map((msg, i) => (
-                  <div key={i} dangerouslySetInnerHTML={{ __html: msg }} />
+                  <div key={i} className="message">
+                    <div className="message-header">
+                      <h3>{msg.nickname}</h3>
+                      <p>{msg.timestamp}</p>
+                    </div>
+                    <p>{msg.message}</p>
+                  </div>
                 ))}
               </div>
             </div>
