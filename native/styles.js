@@ -95,26 +95,36 @@ export default StyleSheet.create({
     padding: 10,
     borderRadius: 8,
     marginBottom: 6,
-    fontStyle: 'italic',
     alignSelf: 'center',
     width: '60%',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  systemMessageText: {
+    color: '#ccc',
+    fontStyle: 'italic',
+  },
+  systemMessageTimestamp: {
+    color: '#999',
+    fontSize: 12,
+    fontStyle: 'italic',
+  },
   messageHeader: {
-    color: '#fff',
-    fontWeight: 'bold',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  messageText: {
+  nickname: {
     color: '#fff',
+    fontWeight: 'bold',
   },
   timestamp: {
     fontWeight: 'normal',
     color: '#ccc',
     fontSize: 12,
     marginLeft: 6,
+  },
+  messageText: {
+    color: '#fff',
   },
   users: {
     paddingTop: 12,

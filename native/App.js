@@ -73,9 +73,8 @@ export default function App() {
         fetchUsers();
       }
 
-      // Normalize timestamp
       try {
-        data.timestamp = new Date(data.timestamp).toLocaleTimeString();
+        data.timestamp = new Date().toLocaleTimeString();
       } catch {}
 
       setMessages(prev => [...prev, data]);
@@ -97,7 +96,7 @@ export default function App() {
 
     const msgObj = {
       nickname,
-      timestamp: new Date().toISOString(), // backend expects consistent format
+      timestamp: new Date().toLocaleTimeString(),
       message,
       type: 'message',
     };
@@ -184,22 +183,30 @@ export default function App() {
                 {[...messages].reverse().map((msg, i) => {
                   const isOwn = msg.nickname === nickname && msg.type !== 'system';
                   const isSystem = msg.type === 'system';
-                  const messageStyle = isSystem
-                    ? styles.systemMessage
-                    : isOwn
-                    ? styles.ownMessage
-                    : styles.message;
+                  
+                  if (isSystem) {
+                    return (
+                      <View key={i} style={styles.systemMessage}>
+                        <Text style={styles.systemMessageText}>{msg.message}</Text>
+                        <Text style={styles.systemMessageTimestamp}>{msg.timestamp}</Text>
+                      </View>
+                    );
+                  }
+
+                  const messageStyle = isOwn ? styles.ownMessage : styles.message;
 
                   return (
                     <View key={i} style={messageStyle}>
-                      <Text style={styles.messageHeader}>
-                        {msg.nickname} <Text style={styles.timestamp}>{msg.timestamp}</Text>
-                      </Text>
+                      <View style={styles.messageHeader}>
+                        <Text style={styles.nickname}>{msg.nickname}</Text>
+                        <Text style={styles.timestamp}>{msg.timestamp}</Text>
+                      </View>
                       <Text style={styles.messageText}>{msg.message}</Text>
                     </View>
                   );
                 })}
               </ScrollView>
+
 
               <View style={styles.users}>
                 <Text style={styles.subheading}>Users:</Text>
