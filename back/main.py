@@ -2,6 +2,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect, status
 from fastapi.middleware.cors import CORSMiddleware
 import json
 from datetime import datetime
+import asyncio
 
 app = FastAPI()
 
@@ -65,7 +66,9 @@ async def websocket_endpoint(websocket: WebSocket, channel: str, nickname: str):
         return
 
     channel_obj.users[nickname] = User(nickname, websocket)
-
+    
+    await asyncio.sleep(0.2)
+    
     await channel_obj.broadcast({
         "nickname": "System",
         "timestamp": datetime.now().strftime("%H:%M:%S"),
