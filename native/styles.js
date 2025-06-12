@@ -116,6 +116,7 @@ export default StyleSheet.create({
   },
   nickname: {
     color: '#fff',
+    width: '80%',
     fontWeight: 'bold',
   },
   timestamp: {

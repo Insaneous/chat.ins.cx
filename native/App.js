@@ -210,13 +210,6 @@ export default function App() {
                 }}
                 inverted
               />
-
-              <View style={styles.users}>
-                <Text style={styles.subheading}>Users:</Text>
-                {users.map((user, i) => (
-                  <Text key={i} style={styles.listItem}>{user}</Text>
-                ))}
-              </View>
             </KeyboardAvoidingView>
           )}
         </View>
