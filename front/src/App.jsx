@@ -11,6 +11,7 @@ function App() {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
+  const [error, setError] = useState('');
   const qr = renderUnicode("exp://94.158.50.15:8081", {
     blackChar: '██',
     whiteChar: '  ',
@@ -48,22 +49,32 @@ function App() {
 
   const handleConnect = (e) => {
     e.preventDefault();
+    setError('');
     const socket = new WebSocket(`wss://${address}/ws/${channel}/${nickname}`);
 
     socket.onopen = () => {
       setWs(socket);
-      setConnected(true);
-      fetchUsers();
     };
 
     socket.onmessage = (event) => {
       try {
         const msgObj = JSON.parse(event.data);
+
+        if (msgObj.type === 'error') {
+          setError(msgObj.message);
+          socket.close();
+          return;
+        }
+
+        if (!connected) {
+          setConnected(true);
+          fetchUsers();
+        }
+
         setMessages(prev => [...prev, msgObj]);
       } catch (err) {
         console.error("Invalid message format:", event.data);
       }
-      fetchUsers();
     };
 
     socket.onclose = () => {
@@ -83,7 +94,8 @@ function App() {
     const payload = {
       nickname,
       timestamp: new Date().toLocaleTimeString(),
-      message
+      message,
+      type: 'message'
     };
 
     ws.send(JSON.stringify(payload));
@@ -113,6 +125,7 @@ function App() {
                 <input value={nickname} onChange={e => setNickname(e.target.value)} required />
                 <button>Connect</button>
               </form>
+              {error && <p className="alert">{error}</p>}
               {channelList.length > 0 && (
                 <>
                   <h2 id="status">Open channels:</h2>
@@ -142,7 +155,7 @@ function App() {
               </form>
               <div className="messages" ref={messagesRef}>
                 {messages.map((msg, i) => (
-                  <div key={i} className={`message ${msg.nickname === nickname ? 'own' : ''}`}>
+                  <div key={i} className={`message ${msg.nickname === nickname ? 'own' : msg.type}`}>
                     <div className="message-header">
                       <h3>{msg.nickname}</h3>
                       <p>{msg.timestamp}</p>

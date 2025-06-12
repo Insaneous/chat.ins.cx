@@ -1,4 +1,4 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, status
 from fastapi.middleware.cors import CORSMiddleware
 import json
 from datetime import datetime
@@ -53,12 +53,24 @@ async def websocket_endpoint(websocket: WebSocket, channel: str, nickname: str):
         channels[channel] = Channel(channel)
 
     channel_obj = channels[channel]
+
+    if nickname in channel_obj.users:
+        await websocket.send_text(json.dumps({
+            "nickname": "System",
+            "timestamp": datetime.now().strftime("%H:%M:%S"),
+            "message": f"The nickname '{nickname}' is already in use.",
+            "type": "error"
+        }))
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+        return
+
     channel_obj.users[nickname] = User(nickname, websocket)
 
     await channel_obj.broadcast({
         "nickname": "System",
         "timestamp": datetime.now().strftime("%H:%M:%S"),
-        "message": f"{nickname} joined the channel"
+        "message": f"{nickname} joined the channel",
+        "type": "system"
     }, websocket)
 
     try:
@@ -75,7 +87,8 @@ async def websocket_endpoint(websocket: WebSocket, channel: str, nickname: str):
         await channel_obj.broadcast({
             "nickname": "System",
             "timestamp": datetime.now().strftime("%H:%M:%S"),
-            "message": f"{nickname} left the channel"
+            "message": f"{nickname} left the channel",
+            "type": "system"
         }, websocket)
 
         if not channel_obj.users:

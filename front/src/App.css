@@ -1,9 +1,10 @@
-*{
+* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
-header{
+
+header {
   position: sticky;
   top: 0;
   width: 100%;
@@ -11,11 +12,13 @@ header{
   color: white;
   padding: 1rem;
 }
-header h1{ 
+
+header h1 {
   max-width: 800px;
   margin: auto;
 }
-main{
+
+main {
   display: flex;
   gap: 1rem;
   justify-content: space-between;
@@ -23,34 +26,42 @@ main{
   margin: auto;
   padding: 1rem 0;
 }
-.welcome{
+
+.welcome {
   width: 60%;
 }
-.chat{
+
+.chat {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
-.actions{
+
+.actions {
   display: flex;
   gap: 0.5rem;
 }
-.users{
+
+.users {
   min-width: 25%;
 }
-form{
+
+form {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
+
 form[name='disconnect'] {
   display: none;
 }
-form[name="message"] {
+
+form[name='message'] {
   display: none;
 }
-button{
+
+button {
   background-color: rgb(66, 0, 171);
   color: white;
   width: 100%;
@@ -59,27 +70,38 @@ button{
   border-radius: 0.5rem;
   cursor: pointer;
 }
-input{
+
+input {
   border: none;
   border-radius: 0.5rem;
   padding: 0.5rem;
   background-color: rgb(76, 76, 76);
   color: white;
 }
-ul{
+
+ul {
   list-style: none;
 }
-li{
+
+li {
   padding: 0.5rem;
   font-size: large;
   border-top: 1px solid rgb(76, 76, 76);
+  cursor: pointer;
 }
-.messages{
+
+li:hover {
+  background-color: rgb(66, 0, 171);
+  color: white;
+}
+
+.messages {
   display: flex;
   flex-direction: column-reverse;
   width: 100%;
   gap: 0.5rem;
 }
+
 .qr {
   background-color: #111;
   color: rgb(255, 255, 255);
@@ -90,10 +112,12 @@ li{
   text-align: center;
   line-height: 1;
 }
+
 .qr p {
   font-size: 0.5rem;
 }
-.message{
+
+.message {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -102,31 +126,62 @@ li{
   background-color: rgb(76, 76, 76);
   border-radius: 0.5rem;
 }
-.message-header{
+
+.message.own {
+  background-color: rgb(98, 0, 196);
+}
+
+.message.system {
+  background-color: rgb(56, 56, 56);
+  font-style: italic;
+}
+
+.message-header {
   display: flex;
   justify-content: space-between;
 }
-.alert{
-  background-color: rgb(98, 98, 98);
+
+.alert {
+  background-color: rgb(255, 77, 77);
+  padding: 0.75rem;
   border-radius: 0.5rem;
-  padding: 0.2rem;
+  margin-top: 1rem;
+  text-align: center;
+  font-weight: bold;
   color: white;
+  animation: fadeIn 0.3s ease-in-out;
 }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @media screen and (max-width: 600px) {
   header h1 span {
     display: block;
   }
+
   main {
     flex-direction: column-reverse;
     gap: 1rem;
     width: 95%;
   }
+
   .qr {
     display: none;
   }
+
   .welcome {
     width: 100%;
   }
+
   .users {
     display: none;
   }
