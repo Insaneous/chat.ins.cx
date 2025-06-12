@@ -25,7 +25,7 @@ export default StyleSheet.create({
     justifyContent: 'center',
   },
   input: {
-    backgroundColor: 'rgb(76, 76, 76)',
+    backgroundColor: 'rgb(56, 56, 56)',
     color: '#fff',
     padding: 12,
     marginVertical: 6,
@@ -52,7 +52,7 @@ export default StyleSheet.create({
     color: '#fff',
     paddingVertical: 12,
     fontSize: 16,
-    borderTopColor: 'rgb(76, 76, 76)',
+    borderTopColor: 'rgb(56, 56, 56)',
     borderTopWidth: 1,
   },
   chat: {
@@ -91,12 +91,12 @@ export default StyleSheet.create({
     width: '100%',
   },
   systemMessage: {
-    backgroundColor: 'rgb(56, 56, 56)',
+    backgroundColor: 'rgb(76, 76, 76)',
     padding: 10,
     borderRadius: 8,
     marginBottom: 6,
     alignSelf: 'center',
-    width: '60%',
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
