@@ -4,9 +4,7 @@ import {
   View,
   Text,
   TextInput,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
+  TouchableOpacity
 } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -67,16 +65,13 @@ export default function App() {
         return;
       }
 
-      if (!connected) {
-        console.log('Connected to WebSocket');
+      if (!connected && data.type !== 'error') {
+        setWs(socket);
         setConnected(true);
         fetchUsers();
       }
 
-      try {
-        data.timestamp = new Date().toLocaleTimeString();
-      } catch {}
-
+      data.timestamp = new Date().toLocaleTimeString();
       setMessages(prev => [...prev, data]);
       fetchUsers();
     };
@@ -117,98 +112,98 @@ export default function App() {
           <Text style={styles.headerText}>Insaneous Chat</Text>
           {connected && <Text style={styles.headerText}>{`| Channel: ${channel}`}</Text>}
         </View>
-        <View style={styles.container}>
-          {!connected ? (
-            <View style={styles.welcome}>
-              <TextInput
-                placeholder="Channel name"
-                placeholderTextColor="#aaa"
-                style={styles.input}
-                value={channel}
-                onChangeText={setChannel}
-              />
-              <TextInput
-                placeholder="Nickname"
-                placeholderTextColor="#aaa"
-                style={styles.input}
-                value={nickname}
-                onChangeText={setNickname}
-              />
-              <TouchableOpacity style={styles.button} onPress={handleConnect}>
-                <Text style={styles.buttonText}>Connect</Text>
-              </TouchableOpacity>
 
-              {error !== '' && (
-                <View style={styles.errorBanner}>
-                  <Text style={styles.errorText}>{error}</Text>
-                </View>
-              )}
+        {!connected ? (
+          <View style={styles.welcome}>
+            <TextInput
+              placeholder="Channel name"
+              placeholderTextColor="#aaa"
+              style={styles.input}
+              value={channel}
+              onChangeText={setChannel}
+            />
+            <TextInput
+              placeholder="Nickname"
+              placeholderTextColor="#aaa"
+              style={styles.input}
+              value={nickname}
+              onChangeText={setNickname}
+            />
+            <TouchableOpacity style={styles.button} onPress={handleConnect}>
+              <Text style={styles.buttonText}>Connect</Text>
+            </TouchableOpacity>
 
-              {channelList.length > 0 && (
-                <>
-                  <Text style={styles.subheading}>Open channels:</Text>
-                  {channelList.map((chan, i) => (
-                    <TouchableOpacity key={i} onPress={() => setChannel(chan)}>
-                      <Text style={styles.listItem}>{chan}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </>
-              )}
-            </View>
-          ) : (
-            <>
-              <View style={styles.messageInputSection}>
-                <TextInput
-                  placeholder="Message"
-                  placeholderTextColor="#aaa"
-                  style={styles.input}
-                  value={message}
-                  onChangeText={setMessage}
-                />
-                <View style={styles.actions}>
-                  <TouchableOpacity style={styles.button} onPress={handleSend}>
-                    <Text style={styles.buttonText}>Send</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.button} onPress={handleDisconnect}>
-                    <Text style={styles.buttonText}>Disconnect</Text>
-                  </TouchableOpacity>
-                </View>
+            {error !== '' && (
+              <View style={styles.errorBanner}>
+                <Text style={styles.errorText}>{error}</Text>
               </View>
+            )}
 
-              <FlatList
-                style={styles.messages}
-                data={messages}
-                keyExtractor={(_, index) => index.toString()}
-                renderItem={({ item: msg }) => {
-                  const isOwn = msg.nickname === nickname && msg.type !== 'system';
-                  const isSystem = msg.type === 'system';
+            {channelList.length > 0 && (
+              <>
+                <Text style={styles.subheading}>Open channels:</Text>
+                {channelList.map((chan, i) => (
+                  <TouchableOpacity key={i} onPress={() => setChannel(chan)}>
+                    <Text style={styles.listItem}>{chan}</Text>
+                  </TouchableOpacity>
+                ))}
+              </>
+            )}
+          </View>
+        ) : (
+          <View style={styles.connected}>
+            <View style={styles.messageInputSection}>
+              <TextInput
+                placeholder="Message"
+                placeholderTextColor="#aaa"
+                style={styles.input}
+                value={message}
+                onChangeText={setMessage}
+              />
+              <View style={styles.actions}>
+                <TouchableOpacity style={styles.button} onPress={handleSend}>
+                  <Text style={styles.buttonText}>Send</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={handleDisconnect}>
+                  <Text style={styles.buttonText}>Disconnect</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
 
-                  if (isSystem) {
-                    return (
-                      <View style={styles.systemMessage}>
-                        <Text style={styles.systemMessageText}>{msg.message}</Text>
-                        <Text style={styles.systemMessageTimestamp}>{msg.timestamp}</Text>
-                      </View>
-                    );
-                  }
+            <FlatList
+              style={styles.flatList}
+              contentContainerStyle={styles.messages}
+              data={messages}
+              keyExtractor={(_, index) => index.toString()}
+              renderItem={({ item: msg }) => {
+                const isOwn = msg.nickname === nickname && msg.type !== 'system';
+                const isSystem = msg.type === 'system';
 
-                  const messageStyle = isOwn ? styles.ownMessage : styles.message;
-
+                if (isSystem) {
                   return (
-                    <View style={messageStyle}>
-                      <View style={styles.messageHeader}>
-                        <Text style={styles.nickname}>{msg.nickname}</Text>
-                        <Text style={styles.timestamp}>{msg.timestamp}</Text>
-                      </View>
-                      <Text style={styles.messageText}>{msg.message}</Text>
+                    <View style={styles.systemMessage}>
+                      <Text style={styles.systemMessageText}>{msg.message}</Text>
+                      <Text style={styles.systemMessageTimestamp}>{msg.timestamp}</Text>
                     </View>
                   );
-                }}
-                inverted
-              />
-          </>
-          )}
-        </View>
+                }
+
+                const messageStyle = isOwn ? styles.ownMessage : styles.message;
+
+                return (
+                  <View style={messageStyle}>
+                    <View style={styles.messageHeader}>
+                      <Text style={styles.nickname}>{msg.nickname}</Text>
+                      <Text style={styles.timestamp}>{msg.timestamp}</Text>
+                    </View>
+                    <Text style={styles.messageText}>{msg.message}</Text>
+                  </View>
+                );
+              }}
+              inverted
+            />
+          </View>
+        )}
       </SafeAreaView>
     </SafeAreaProvider>
   );

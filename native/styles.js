@@ -22,7 +22,7 @@ export default StyleSheet.create({
   },
   welcome: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   input: {
     backgroundColor: 'rgb(56, 56, 56)',
