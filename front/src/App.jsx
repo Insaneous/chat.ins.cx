@@ -71,7 +71,7 @@ function App() {
         return;
       }
     
-      if (!connected) {
+      if (!connected && data.type !== 'error') {
         setWs(socket);
         setConnected(true);
         fetchUsers();
@@ -103,7 +103,6 @@ function App() {
     };
 
     ws.send(JSON.stringify(payload));
-    setMessages(prev => [...prev, payload]);
     setMessage('');
   };
 

@@ -63,7 +63,7 @@ export default function App() {
         return;
       }
     
-      if (!connected) {
+      if (!connected && data.type !== 'error') {
         setWs(socket);
         setConnected(true);
         fetchUsers();
@@ -93,7 +93,6 @@ export default function App() {
     };
 
     ws.send(JSON.stringify(msgObj));
-    setMessages(prev => [...prev, msgObj]);
     setMessage('');
   };
 
