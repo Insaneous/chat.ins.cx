@@ -66,7 +66,8 @@ function App() {
           return;
         }
 
-        if (!connected) {
+        if (!connected && data.type !== 'error') {
+          setWs(socket);
           setConnected(true);
           fetchUsers();
         }

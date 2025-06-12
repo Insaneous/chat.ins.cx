@@ -47,7 +47,6 @@ export default function App() {
     setError('');
     const socket = new WebSocket(`wss://${address}/ws/${channel}/${nickname}`);
     socket.onopen = () => {
-      // Do not mark as connected yet
     };
     socket.onmessage = (event) => {
       try {
@@ -59,7 +58,7 @@ export default function App() {
           return;
         }
 
-        if (!connected) {
+        if (!connected && data.type !== 'error') {
           setWs(socket);
           setConnected(true);
           fetchUsers();
