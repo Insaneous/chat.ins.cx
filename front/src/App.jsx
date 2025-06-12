@@ -158,8 +158,8 @@ function App() {
                 </div>
               </form>
               <div className="messages" ref={messagesRef}>
-                {messages.map((msg, i) => 
-                  {msg.type === 'system' ? (
+                {messages.map((msg, i) =>
+                  msg.type === 'system' ? (
                     <div key={i} className="system-message">
                       <p>{msg.message}</p>
                       <p>{msg.timestamp}</p>
@@ -172,7 +172,8 @@ function App() {
                       </div>
                       <p>{msg.message}</p>
                     </div>
-                  )})}
+                  )
+                )}
               </div>
             </div>
             {users && (
