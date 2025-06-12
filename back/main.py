@@ -67,7 +67,7 @@ async def websocket_endpoint(websocket: WebSocket, channel: str, nickname: str):
 
     channel_obj.users[nickname] = User(nickname, websocket)
     
-    await asyncio.sleep(0.2)
+    await asyncio.sleep(1)
     
     await channel_obj.broadcast({
         "nickname": "System",
