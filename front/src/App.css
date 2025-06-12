@@ -2,6 +2,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  word-break: break-all;
 }
 
 header {
@@ -45,6 +46,7 @@ main {
 
 .users {
   min-width: 25%;
+  overflow-x: hidden;
 }
 
 form {

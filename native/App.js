@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  ScrollView,
+  FlatList,
   View,
   Text,
   TextInput,
@@ -179,14 +179,17 @@ export default function App() {
                 </View>
               </View>
 
-              <ScrollView style={styles.messages} inverted>
-                {[...messages].reverse().map((msg, i) => {
+              <FlatList
+                style={styles.messages}
+                data={messages}
+                keyExtractor={(_, index) => index.toString()}
+                renderItem={({ item: msg }) => {
                   const isOwn = msg.nickname === nickname && msg.type !== 'system';
                   const isSystem = msg.type === 'system';
-                  
+
                   if (isSystem) {
                     return (
-                      <View key={i} style={styles.systemMessage}>
+                      <View style={styles.systemMessage}>
                         <Text style={styles.systemMessageText}>{msg.message}</Text>
                         <Text style={styles.systemMessageTimestamp}>{msg.timestamp}</Text>
                       </View>
@@ -196,7 +199,7 @@ export default function App() {
                   const messageStyle = isOwn ? styles.ownMessage : styles.message;
 
                   return (
-                    <View key={i} style={messageStyle}>
+                    <View style={messageStyle}>
                       <View style={styles.messageHeader}>
                         <Text style={styles.nickname}>{msg.nickname}</Text>
                         <Text style={styles.timestamp}>{msg.timestamp}</Text>
@@ -204,9 +207,9 @@ export default function App() {
                       <Text style={styles.messageText}>{msg.message}</Text>
                     </View>
                   );
-                })}
-              </ScrollView>
-
+                }}
+                inverted
+              />
 
               <View style={styles.users}>
                 <Text style={styles.subheading}>Users:</Text>

@@ -102,6 +102,7 @@ export default StyleSheet.create({
   },
   systemMessageText: {
     color: '#ccc',
+    width: '80%',
     fontStyle: 'italic',
   },
   systemMessageTimestamp: {
