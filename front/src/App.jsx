@@ -72,7 +72,7 @@ function App() {
       }
     
       if (!connected && data.type !== 'error') {
-        setWs(socket);
+        console.log('Connected to WebSocket');
         setConnected(true);
         fetchUsers();
       }
