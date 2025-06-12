@@ -156,11 +156,7 @@ export default function App() {
               )}
             </View>
           ) : (
-            <KeyboardAvoidingView
-              style={styles.chat}
-              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-              keyboardVerticalOffset={80}
-            >
+            <>
               <View style={styles.messageInputSection}>
                 <TextInput
                   placeholder="Message"
@@ -210,7 +206,7 @@ export default function App() {
                 }}
                 inverted
               />
-            </KeyboardAvoidingView>
+          </>
           )}
         </View>
       </SafeAreaView>

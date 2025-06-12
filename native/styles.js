@@ -55,12 +55,6 @@ export default StyleSheet.create({
     borderTopColor: 'rgb(56, 56, 56)',
     borderTopWidth: 1,
   },
-  chat: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 8,
-  },
   messageInputSection: {
     marginBottom: 12,
   },
