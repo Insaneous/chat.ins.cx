@@ -117,23 +117,27 @@ li:hover {
   font-size: 0.5rem;
 }
 
+.system-message {
+  background-color: rgb(56, 56, 56);
+  display: flex;
+  width: 80%;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  font-style: italic;
+}
+
 .message {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   width: 100%;
   padding: 0.5rem;
-  background-color: rgb(76, 76, 76);
+  background-color: rgb(56, 56, 56);
   border-radius: 0.5rem;
 }
 
 .message.own {
-  background-color: rgb(98, 0, 196);
-}
-
-.message.system {
-  background-color: rgb(56, 56, 56);
-  font-style: italic;
+  background-color: rgb(66, 0, 171);
 }
 
 .message-header {

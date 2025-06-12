@@ -75,7 +75,7 @@ export default StyleSheet.create({
     marginBottom: 6,
   },
   ownMessage: {
-    backgroundColor: 'rgb(98, 0, 196)',
+    backgroundColor: 'rgb(66, 0, 171)',
     padding: 10,
     borderRadius: 8,
     marginBottom: 6,

@@ -158,15 +158,21 @@ function App() {
                 </div>
               </form>
               <div className="messages" ref={messagesRef}>
-                {messages.map((msg, i) => (
-                  <div key={i} className={`message ${msg.nickname === nickname ? 'own' : msg.type}`}>
-                    <div className="message-header">
-                      <h3>{msg.nickname}</h3>
+                {messages.map((msg, i) => 
+                  {msg.type === 'system' ? (
+                    <div key={i} className="system-message">
+                      <p>{msg.message}</p>
                       <p>{msg.timestamp}</p>
                     </div>
-                    <p>{msg.message}</p>
-                  </div>
-                ))}
+                  ) : (
+                    <div key={i} className={`message ${msg.nickname === nickname ? 'own' : ''}`}>
+                      <div className="message-header">
+                        <h3>{msg.nickname}</h3>
+                        <p>{msg.timestamp}</p>
+                      </div>
+                      <p>{msg.message}</p>
+                    </div>
+                  )})}
               </div>
             </div>
             {users && (
