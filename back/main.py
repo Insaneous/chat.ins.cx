@@ -26,7 +26,7 @@ class Channel:
     async def broadcast(self, message_dict: dict, sender: WebSocket):
         message_json = json.dumps(message_dict)
         for user in self.users.values():
-            if user.connection and user.connection != sender:
+            if user.connection:
                 await user.connection.send_text(message_json)
 
 class User:
