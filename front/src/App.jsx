@@ -57,26 +57,29 @@ function App() {
     };
 
     socket.onmessage = (event) => {
+      let data;
       try {
-        const msgObj = JSON.parse(event.data);
-
-        if (msgObj.type === 'error') {
-          setError(msgObj.message);
-          socket.close();
-          return;
-        }
-
-        if (!connected && data.type !== 'error') {
-          setWs(socket);
-          setConnected(true);
-          fetchUsers();
-        }
-
-        setMessages(prev => [...prev, msgObj]);
+        data = JSON.parse(event.data);
       } catch (err) {
-        console.error("Invalid message format:", event.data);
+        console.warn('Invalid JSON received:', event.data);
+        return;
       }
-    };
+    
+      if (data.type === 'error') {
+        setError(data.message);
+        socket.close();
+        return;
+      }
+    
+      if (!connected) {
+        setWs(socket);
+        setConnected(true);
+        fetchUsers();
+      }
+    
+      setMessages(prev => [...prev, data]);
+      fetchUsers();
+    };    
 
     socket.onclose = () => {
       setConnected(false);

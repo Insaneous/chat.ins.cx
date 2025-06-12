@@ -49,26 +49,28 @@ export default function App() {
     socket.onopen = () => {
     };
     socket.onmessage = (event) => {
+      let data;
       try {
-        const data = JSON.parse(event.data);
-
-        if (data.type === 'error') {
-          setError(data.message);
-          socket.close();
-          return;
-        }
-
-        if (!connected && data.type !== 'error') {
-          setWs(socket);
-          setConnected(true);
-          fetchUsers();
-        }
-
-        setMessages(prev => [...prev, data]);
-        fetchUsers();
+        data = JSON.parse(event.data);
       } catch (err) {
         console.warn('Invalid JSON received:', event.data);
+        return;
       }
+    
+      if (data.type === 'error') {
+        setError(data.message);
+        socket.close();
+        return;
+      }
+    
+      if (!connected) {
+        setWs(socket);
+        setConnected(true);
+        fetchUsers();
+      }
+    
+      setMessages(prev => [...prev, data]);
+      fetchUsers();
     };
     socket.onclose = () => {
       setConnected(false);
