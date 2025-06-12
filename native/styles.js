@@ -46,16 +46,20 @@ export default StyleSheet.create({
     color: '#fff',
     marginTop: 12,
     fontSize: 18,
+    fontWeight: 'bold',
   },
   listItem: {
     color: '#fff',
-    paddingVertical: 8,
-    borderBottomColor: 'rgb(76, 76, 76)',
-    borderBottomWidth: 1,
+    paddingVertical: 12,
     fontSize: 16,
+    borderTopColor: 'rgb(76, 76, 76)',
+    borderTopWidth: 1,
   },
   chat: {
     flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 8,
   },
   messageInputSection: {
     marginBottom: 12,
@@ -63,22 +67,28 @@ export default StyleSheet.create({
   actions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    gap: 8,
   },
   messages: {
     flex: 1,
     marginVertical: 8,
+    display: 'flex',
+    flexDirection: 'column-reverse',
+    gap: 8,
   },
   message: {
-    backgroundColor: 'rgb(76, 76, 76)',
+    backgroundColor: 'rgb(56, 56, 56)',
     padding: 10,
     borderRadius: 8,
     marginBottom: 6,
+    width: '100%',
   },
   ownMessage: {
     backgroundColor: 'rgb(66, 0, 171)',
     padding: 10,
     borderRadius: 8,
     marginBottom: 6,
+    width: '100%',
   },
   systemMessage: {
     backgroundColor: 'rgb(56, 56, 56)',
@@ -86,10 +96,16 @@ export default StyleSheet.create({
     borderRadius: 8,
     marginBottom: 6,
     fontStyle: 'italic',
+    alignSelf: 'center',
+    width: '60%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   messageHeader: {
     color: '#fff',
     fontWeight: 'bold',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   messageText: {
     color: '#fff',
@@ -102,12 +118,13 @@ export default StyleSheet.create({
   },
   users: {
     paddingTop: 12,
+    minWidth: '25%',
   },
   errorBanner: {
     backgroundColor: 'rgb(255, 77, 77)',
-    padding: 10,
-    marginVertical: 10,
+    padding: 12,
     borderRadius: 8,
+    marginVertical: 10,
   },
   errorText: {
     color: '#fff',

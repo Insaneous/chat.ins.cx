@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import styles from './styles'; // <-- Import styles
+import styles from './styles';
 
 export default function App() {
   const [ws, setWs] = useState(null);
@@ -32,6 +32,7 @@ export default function App() {
   };
 
   const fetchUsers = () => {
+    if (!channel) return;
     fetch(`https://${address}/${channel}/users`)
       .then(res => res.json())
       .then(data => setUsers(data.users || []));
@@ -46,8 +47,11 @@ export default function App() {
   const handleConnect = () => {
     setError('');
     const socket = new WebSocket(`wss://${address}/ws/${channel}/${nickname}`);
+
     socket.onopen = () => {
+      setWs(socket);
     };
+
     socket.onmessage = (event) => {
       let data;
       try {
@@ -56,22 +60,28 @@ export default function App() {
         console.warn('Invalid JSON received:', event.data);
         return;
       }
-    
+
       if (data.type === 'error') {
         setError(data.message);
         socket.close();
         return;
       }
-    
-      if (!connected && data.type !== 'error') {
-        setWs(socket);
+
+      if (!connected) {
+        console.log('Connected to WebSocket');
         setConnected(true);
         fetchUsers();
       }
-    
+
+      // Normalize timestamp
+      try {
+        data.timestamp = new Date(data.timestamp).toLocaleTimeString();
+      } catch {}
+
       setMessages(prev => [...prev, data]);
       fetchUsers();
     };
+
     socket.onclose = () => {
       setConnected(false);
       setWs(null);
@@ -87,7 +97,7 @@ export default function App() {
 
     const msgObj = {
       nickname,
-      timestamp: new Date().toLocaleTimeString(),
+      timestamp: new Date().toISOString(), // backend expects consistent format
       message,
       type: 'message',
     };

@@ -77,7 +77,7 @@ function App() {
         setConnected(true);
         fetchUsers();
       }
-    
+      data.timestamp = new Date(data.timestamp).toLocaleTimeString();
       setMessages(prev => [...prev, data]);
       fetchUsers();
     };    
