@@ -112,8 +112,7 @@ export default function App() {
       <SafeAreaView style={styles.safeContainer}>
         <StatusBar style='light' />
         <View style={styles.header}>
-          <Text style={styles.headerText}>Insaneous Chat</Text>
-          {connected && <Text style={styles.headerText}>{`| Channel: ${channel}`}</Text>}
+          <Text style={styles.headerText}>{connected ? `Channel: ${channel}` : 'Insaneous Chat'}</Text>
         </View>
         <View style={styles.container}>
           {!connected ? (
