@@ -36,7 +36,7 @@ export default function App() {
 
   const handleConnect = () => {
     setError('');
-    const socket = new WebSocket(`wss://${address}/ws/${channel}/${nickname}`);
+    const socket = new WebSocket(`wss://${address}/ws/${encodeURIComponent(channel)}/${encodeURIComponent(nickname)}`);
 
     socket.onopen = () => {
       setWs(socket);
@@ -97,7 +97,7 @@ export default function App() {
   };
 
   return (
-    <SafeAreaProvider>
+    <SafeAreaProvider style={styles.safeAreaProvider}>
       <SafeAreaView style={styles.safeContainer}>
         <StatusBar style='light' />
         <View style={styles.header}>
