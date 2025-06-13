@@ -116,7 +116,7 @@ function App() {
   return (
     <>
       <header>
-        <h1>{connected ? channel : 'Insaneous Chat'}</h1>
+        <h1>{connected ? `Channel: ${channel}` : 'Insaneous Chat'}</h1>
       </header>
       <main>
         {!connected && (

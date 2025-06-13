@@ -18,7 +18,6 @@ export default function App() {
   const [nickname, setNickname] = useState('');
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
-  const [users, setUsers] = useState([]);
   const [error, setError] = useState('');
 
   const address = 'chat-be.ins.cx';
@@ -27,13 +26,6 @@ export default function App() {
     fetch(`https://${address}/channels`)
       .then(res => res.json())
       .then(data => setChannelList(data.channels || []));
-  };
-
-  const fetchUsers = () => {
-    if (!channel) return;
-    fetch(`https://${address}/${channel}/users`)
-      .then(res => res.json())
-      .then(data => setUsers(data.users || []));
   };
 
   useEffect(() => {
@@ -68,7 +60,6 @@ export default function App() {
       if (!connected) {
         console.log('Connected to WebSocket');
         setConnected(true);
-        fetchUsers();
       }
 
       try {
@@ -76,14 +67,12 @@ export default function App() {
       } catch {}
 
       setMessages(prev => [...prev, data]);
-      fetchUsers();
     };
 
     socket.onclose = () => {
       setConnected(false);
       setWs(null);
       setMessages([]);
-      setUsers([]);
       setChannel('');
       fetchChannels();
     };
@@ -173,7 +162,7 @@ export default function App() {
               </View>
 
               <FlatList
-                style={styles.messages}
+                contentContainerStyle={styles.messages}
                 data={messages}
                 keyExtractor={(_, index) => index.toString()}
                 renderItem={({ item: msg }) => {
