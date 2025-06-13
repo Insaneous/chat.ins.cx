@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import './App.css';
 import { renderUnicode } from 'uqr';
 
+
 function App() {
   const [ws, setWs] = useState(null);
   const [channelList, setChannelList] = useState([]);
@@ -115,7 +116,7 @@ function App() {
   return (
     <>
       <header>
-        <h1>Insaneous Chat{connected && <span> | Channel: {channel}</span>}</h1>
+        <h1>{connected ? channel : 'Insaneous Chat'}</h1>
       </header>
       <main>
         {!connected && (

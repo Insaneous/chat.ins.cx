@@ -2,13 +2,15 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect, status
 from fastapi.middleware.cors import CORSMiddleware
 import json
 from datetime import datetime
-import asyncio
+
 
 app = FastAPI()
+
 
 origins = [
     'https://chat.ins.cx'
 ]
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -16,7 +18,8 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=['*'],
     allow_headers=['*']
-)
+    )
+
 
 class Channel:
     def __init__(self, name):
@@ -28,23 +31,28 @@ class Channel:
         for user in self.users.values():
             if user.connection:
                 await user.connection.send_text(message_json)
+                
 
 class User:
     def __init__(self, nickname: str, connection: WebSocket):
         self.nickname = nickname
         self.connection = connection
+        
 
 channels = {}
+
 
 @app.get('/channels')
 async def get_channels():
     return {'channels': list(channels.keys())}
+  
 
 @app.get('/{channel}/users')
 async def get_channel_users(channel: str):
     if channel in channels:
         return {'users': list(channels[channel].users.keys())}
     return {'users': []}
+  
 
 @app.websocket('/ws/{channel}/{nickname}')
 async def websocket_endpoint(websocket: WebSocket, channel: str, nickname: str):

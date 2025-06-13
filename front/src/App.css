@@ -172,10 +172,6 @@ li:hover {
 }
 
 @media screen and (max-width: 600px) {
-  header h1 span {
-    display: block;
-  }
-
   main {
     flex-direction: column-reverse;
     gap: 1rem;
