@@ -32,7 +32,10 @@ function App() {
     fetch(`https://${address}/channels`)
       .then(res => res.json())
       .then(data => {
-        setChannelList(data.channels || []);
+        setChannelList(data.channels || []).catch(err => {
+          console.error('Error connecting to server', err);
+          setError('Error connecting to server');
+        });
       });
   }, []);
 
@@ -83,7 +86,6 @@ function App() {
     };    
 
     socket.onclose = () => {
-      setConnected(false);
       setWs(null);
       setMessages([]);
       setUsers([]);
@@ -111,6 +113,7 @@ function App() {
     if (ws) {
       ws.close();
     }
+    setConnected(false);
   };
 
   return (
@@ -157,6 +160,7 @@ function App() {
                   <button onClick={handleDisconnect}>Disconnect</button>
                 </div>
               </form>
+              {error && <p className="alert">{error}</p>}
               <div className="messages" ref={messagesRef}>
                 {messages.map((msg, i) =>
                   msg.type === 'system' ? (

@@ -25,7 +25,11 @@ export default function App() {
   const fetchChannels = () => {
     fetch(`https://${address}/channels`)
       .then(res => res.json())
-      .then(data => setChannelList(data.channels || []));
+      .then(data => setChannelList(data.channels || [])).catch(err => {
+        console.error('Error connecting to server', err);
+        setError('Error connecting to server');
+      }
+    );
   };
 
   useEffect(() => {
@@ -70,7 +74,6 @@ export default function App() {
     };
 
     socket.onclose = () => {
-      setConnected(false);
       setWs(null);
       setMessages([]);
       setChannel('');
@@ -94,6 +97,7 @@ export default function App() {
 
   const handleDisconnect = () => {
     if (ws) ws.close();
+    setConnected(false);
   };
 
   return (
@@ -160,6 +164,12 @@ export default function App() {
                   </TouchableOpacity>
                 </View>
               </View>
+
+              {error !== '' && (
+                <View style={styles.errorBanner}>
+                  <Text style={styles.errorText}>{error}</Text>
+                </View>
+              )}
 
               <FlatList
                 data={messages}
