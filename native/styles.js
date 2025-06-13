@@ -65,11 +65,6 @@ export default StyleSheet.create({
     gap: 8,
   },
   messages: {
-    marginVertical: 8,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-end',
-    gap: 8,
   },
   message: {
     backgroundColor: 'rgb(56, 56, 56)',

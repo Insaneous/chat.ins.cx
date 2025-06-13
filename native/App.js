@@ -162,7 +162,6 @@ export default function App() {
               </View>
 
               <FlatList
-                style={{flex: 1}}
                 contentContainerStyle={styles.messages}
                 data={messages}
                 keyExtractor={(_, index) => index.toString()}
