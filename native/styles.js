@@ -69,7 +69,7 @@ export default StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-end',
-    height: '80%',
+    height: '20%',
     gap: 8,
   },
   message: {
