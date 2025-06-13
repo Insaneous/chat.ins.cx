@@ -66,7 +66,7 @@ export default function App() {
         data.timestamp = new Date().toLocaleTimeString();
       } catch {}
 
-      setMessages(prev => [...prev, data]);
+      setMessages(prev => [data, ...prev]);
     };
 
     socket.onclose = () => {
@@ -162,8 +162,6 @@ export default function App() {
               </View>
 
               <FlatList
-                inverted
-                contentContainerStyle={styles.messages}
                 data={messages}
                 keyExtractor={(_, index) => index.toString()}
                 renderItem={({ item: msg }) => {

@@ -64,10 +64,6 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     gap: 8,
   },
-  messages: {
-    display: 'flex',
-    justifyContent: 'flex-start',
-  },
   message: {
     backgroundColor: 'rgb(56, 56, 56)',
     padding: 10,
