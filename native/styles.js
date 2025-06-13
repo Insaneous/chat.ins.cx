@@ -6,6 +6,8 @@ export default StyleSheet.create({
     backgroundColor: '#000',
   },
   container: {
+    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: 16,
   },
   header: {
