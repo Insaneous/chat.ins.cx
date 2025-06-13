@@ -67,7 +67,7 @@ export default StyleSheet.create({
     flex: 1,
     marginVertical: 8,
     display: 'flex',
-    flexDirection: 'column-reverse',
+    flexDirection: 'column',
     gap: 8,
   },
   message: {
