@@ -33,8 +33,8 @@ function App() {
       .then(res => res.json())
       .then(data => {
         setChannelList(data.channels || []).catch(err => 
-          setError('Error connecting to server'
-        ))
+          console.error('Error connecting to server', err) &&
+          setError('Error connecting to server'))
       });
   }, []);
 
