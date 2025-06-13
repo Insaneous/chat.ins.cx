@@ -166,10 +166,10 @@ export default function App() {
               </View>
 
               {error !== '' && (
-                <View style={styles.errorBanner}>
-                  <Text style={styles.errorText}>{error}</Text>
-                </View>
-              )}
+                <TouchableOpacity style={styles.errorBanner} onPress={handleConnect}>
+                  <Text style={styles.errorText}>Connect</Text>
+                </TouchableOpacity>
+                )}
 
               <FlatList
                 data={messages}
