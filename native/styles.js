@@ -65,7 +65,6 @@ export default StyleSheet.create({
     gap: 8,
   },
   messages: {
-    flex: 1,
     marginVertical: 8,
     display: 'flex',
     flexDirection: 'column',
