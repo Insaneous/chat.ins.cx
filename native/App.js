@@ -76,7 +76,6 @@ export default function App() {
     socket.onclose = () => {
       setWs(null);
       setMessages([]);
-      setChannel('');
       fetchChannels();
     };
   };
@@ -167,7 +166,7 @@ export default function App() {
 
               {error !== '' && (
                 <TouchableOpacity style={styles.errorBanner} onPress={handleConnect}>
-                  <Text style={styles.errorText}>Connect</Text>
+                  <Text style={styles.errorText}>{error}. Tap to reconnect.</Text>
                 </TouchableOpacity>
                 )}
 
