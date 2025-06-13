@@ -32,10 +32,9 @@ function App() {
     fetch(`https://${address}/channels`)
       .then(res => res.json())
       .then(data => {
-        setChannelList(data.channels || []).catch(err => {
-          console.error('Error connecting to server', err);
-          setError('Error connecting to server');
-        });
+        setChannelList(data.channels || []).catch(err => 
+          setError('Error connecting to server'
+        ))
       });
   }, []);
 
@@ -132,7 +131,9 @@ function App() {
                 <input value={nickname} onChange={e => setNickname(e.target.value)} required />
                 <button>Connect</button>
               </form>
+
               {error && <p className="alert">{error}</p>}
+
               {channelList.length > 0 && (
                 <>
                   <h2 id="status">Open channels:</h2>
@@ -160,7 +161,9 @@ function App() {
                   <button onClick={handleDisconnect}>Disconnect</button>
                 </div>
               </form>
+
               {error && <p className="alert">{error}</p>}
+
               <div className="messages" ref={messagesRef}>
                 {messages.map((msg, i) =>
                   msg.type === 'system' ? (
