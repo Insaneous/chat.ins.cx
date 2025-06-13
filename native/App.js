@@ -162,6 +162,7 @@ export default function App() {
               </View>
 
               <FlatList
+                inverted
                 contentContainerStyle={styles.messages}
                 data={messages}
                 keyExtractor={(_, index) => index.toString()}
