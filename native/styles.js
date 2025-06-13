@@ -1,16 +1,10 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-  safeAreaProvider: {
-    height: '100%',
-  },
   safeContainer: {
-    flex: 1,
     backgroundColor: '#000',
   },
   container: {
-    flex: 1,
-    flexGrow: 1,
     paddingHorizontal: 16,
   },
   header: {
@@ -68,7 +62,6 @@ export default StyleSheet.create({
     gap: 8,
   },
   messages: {
-    flex: 1,
     marginVertical: 8,
     display: 'flex',
     flexDirection: 'column',

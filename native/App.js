@@ -97,7 +97,7 @@ export default function App() {
   };
 
   return (
-    <SafeAreaProvider style={styles.safeAreaProvider}>
+    <SafeAreaProvider>
       <SafeAreaView style={styles.safeContainer}>
         <StatusBar style='light' />
         <View style={styles.header}>
