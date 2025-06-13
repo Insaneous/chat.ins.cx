@@ -66,7 +66,7 @@ export default StyleSheet.create({
   },
   messages: {
     display: 'flex',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
   },
   message: {
     backgroundColor: 'rgb(56, 56, 56)',
